@@ -7,12 +7,8 @@ from io import BytesIO
 
 class ModelInf:
     def __init__(self, use_cuda=True):
-        if use_cuda and torch.cuda.is_available():
-            self.device = torch.device("cuda:0")
-            device_name = "GPU"
-        else:
-            self.device = torch.device("cpu")
-            device_name = "CPU"
+        self.device = torch.device("cpu")
+        device_name = "CPU"
 
         logging.basicConfig(
             level=logging.INFO,
