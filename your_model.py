@@ -145,5 +145,5 @@ def predict_is_ai(image_bytes):
     clip_pred = ["AI generated image", "Human-made photo", "Human-made computer art"][
         np.argmax(outp["resnet_probs"])]
     clip_class_probs = np.array([outp["clip_probs"][0], outp["clip_probs"][1] + outp["clip_probs"][2]])
-    sum_decision = ["AI-generated", "Not"][np.argmax(outp["swin_probs"] + outp["resnet_probs"] + clip_class_probs)]
+    sum_decision = ["AI-generated", "Not AI"][np.argmax(outp["swin_probs"] + outp["resnet_probs"] + clip_class_probs)]
     return f"\nSwin predict: {swin_pred}\nResnet predict: {resnet_pred}\nClip predict: {clip_pred}\nSum predict: {sum_decision}\nMLP predict: {outp["class_name"]}"
