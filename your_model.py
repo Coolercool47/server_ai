@@ -48,9 +48,9 @@ class ModelInf:
         self.clip_model.eval()
         for param in self.clip_model.parameters():
             param.requires_grad = False
-        self.clip_prompts = ["AI generated image", "Human-made photo", "Human-made computer art"]
+        self.clip_prompts = ["AI generated image", "Human-made image"]
 
-        self.meta_model = MetaMLP(input_size=7)
+        self.meta_model = MetaMLP(input_size=6)
         self.meta_model.load_state_dict(
             torch.load("models/meta_mlp_weights.pth", weights_only=False, map_location="cpu"))
         self.meta_model.to(self.device)
@@ -142,8 +142,6 @@ def predict_is_ai(image_bytes):
     outp = _model_inf.predict_image_with_ensemble(image_bytes)
     swin_pred = ["AI-generated", "Not AI"][np.argmax(outp["swin_probs"])]
     resnet_pred = ["AI-generated", "Not AI"][np.argmax(outp["resnet_probs"])]
-    clip_pred = ["AI generated image", "Human-made photo", "Human-made computer art"][
-        np.argmax(outp["resnet_probs"])]
-    clip_class_probs = np.array([outp["clip_probs"][0], outp["clip_probs"][1] + outp["clip_probs"][2]])
-    sum_decision = ["AI-generated", "Not AI"][np.argmax(outp["swin_probs"] + outp["resnet_probs"] + clip_class_probs)]
+    clip_pred = ["AI generated image", "Human-made image"][np.argmax(outp["clip_probs"])]
+    sum_decision = ["AI-generated", "Not AI"][np.argmax(outp["swin_probs"] + outp["resnet_probs"] + outp["clip_probs"])]
     return f"\nSwin predict: {swin_pred}\nResnet predict: {resnet_pred}\nClip predict: {clip_pred}\nSum predict: {sum_decision}\nMLP predict: {outp["class_name"]}"
