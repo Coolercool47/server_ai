@@ -1,8 +1,7 @@
 from fastapi import FastAPI, Body, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, ORJSONResponse
 import base64
-from io import BytesIO
 from your_model import predict_is_ai
 import logging
 
@@ -50,8 +49,8 @@ async def check_ai(
 
         # Получение предсказания
         result = predict_is_ai(image_bytes)
-
-        return JSONResponse(content={"result": result})
+        print(result)
+        return ORJSONResponse(content={"result": result})
 
     except HTTPException as he:
         logger.error(f"Validation error: {he.detail}")
